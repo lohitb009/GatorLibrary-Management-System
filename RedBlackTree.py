@@ -17,7 +17,7 @@ class RedBlackTree:
 
         while True:
 
-            if parent.value > node.value:
+            if parent.value.bookId > node.value.bookId:
                 # objNewNode on lhs
                 if parent.left is not None:
                     parent = parent.left
@@ -391,9 +391,10 @@ class RedBlackTree:
             parentNode.color = "Red"
             childNode.color = "Red"
 
-    def insertionNode(self, value):
+    def insertionNode(self, bookId, bookName, authorName):
         # create an object of class Node
-        objNewNode = Node(value=value)
+        objNewNode = Node(bookId= bookId,
+                          bookName= bookName, authorName= authorName)
 
         # case 1 -- tree is empty
         if self.root is None:
@@ -430,7 +431,7 @@ class RedBlackTree:
             # local list
             local = []
 
-            for i in range(0,size):
+            for i in range(0, size):
 
                 # pop the node from the queue
                 popNode = bfsQueue.popleft()
@@ -440,9 +441,9 @@ class RedBlackTree:
 
                 # generate a tuple-pair
                 if popNode.parent is not None:
-                    parentValue = popNode.parent.value
+                    parentValue = popNode.parent.value.bookId
 
-                pair = (popNode.value, popNode.color, parentValue)
+                pair = (popNode.value.bookId, popNode.color, parentValue)
 
                 # add pair inside local
                 local.append(pair)
@@ -466,5 +467,3 @@ class RedBlackTree:
 
         # return the result
         return resultList
-
-
