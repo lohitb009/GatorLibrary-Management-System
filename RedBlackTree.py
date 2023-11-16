@@ -393,8 +393,8 @@ class RedBlackTree:
 
     def insertionNode(self, bookId, bookName, authorName):
         # create an object of class Node
-        objNewNode = Node(bookId= bookId,
-                          bookName= bookName, authorName= authorName)
+        objNewNode = Node(bookId=bookId,
+                          bookName=bookName, authorName=authorName)
 
         # case 1 -- tree is empty
         if self.root is None:
@@ -467,3 +467,306 @@ class RedBlackTree:
 
         # return the result
         return resultList
+
+    def __searchNode(self, bookId):
+        currentNode = self.root
+
+        while currentNode is not None:
+            if currentNode.value.bookId == bookId:
+                break
+            elif bookId < currentNode.value.bookId:
+                currentNode = currentNode.left
+            elif bookId > currentNode.value.bookId:
+                currentNode = currentNode.right
+
+        return currentNode
+
+    def __getSuccessor(self, node):
+        successor = node
+
+        while successor.left is not None:
+            successor = successor.left
+
+        return successor
+
+    def __getReplacementNode(self, node):
+
+        if node.left is not None and node.right is not None:
+            '''
+            if the node has two children, return the in-order successor of the node
+            '''
+            return self.__getSuccessor(node.right)
+
+        if node.left is None and node.right is None:
+            # if node is a leaf node, return None
+            return None
+
+        if node.left is not None:
+            # if node.left child is not null, return left
+            return node.left
+
+        if node.left is not None:
+            # if node.left child is not null, return left
+            return node.left
+
+        else:
+            # if node.right is not null, return right
+            return node.right
+
+    def __getSibling(self, node):
+        if node == self.root:
+            return None
+
+        if node.parent.left == node:
+            return node.parent.right
+
+        else:
+            return node.parent.left
+
+    """
+    The function is used as part of fixing up the coloring
+        of red-black tree, while insertion or deletion operations.
+
+            B                                          A
+           / \        ->(rotate right on B)->         / \
+          A   E                                      C   B
+         / \                                            / \
+        C   D                                          D   E
+    """
+
+    def __rotateRight(self, node):
+
+        leftChild = node.left
+        node.left = leftChild.right
+
+        if leftChild.right is not None:
+            leftChild.right.parent = node
+        leftChild.parent = node.parent
+
+        if node.parent is None:
+            self.root = leftChild
+        elif node == node.parent.right:
+            node.parent.right = leftChild
+        else:
+            node.parent.left = leftChild
+
+        leftChild.right = node
+        node.parent = leftChild
+
+        return node
+
+    """
+    The function is used as part of fixing up the coloring
+        of red-black tree, while insertion or deletion operations.
+
+        A                                          B
+       / \        ->(rotate left on A)->          / \
+      C   B                                      A   E
+         / \                                    / \
+        D   E                                  C   D
+    
+    """
+
+    def __rotateLeft(self, node):
+
+        rightChild = node.right
+        node.right = rightChild.left
+
+        if rightChild.left is not None:
+            rightChild.left.parent = node
+        rightChild.parent = node.parent
+
+        if node.parent is None:
+            self.root = rightChild
+        elif node == node.parent.left:
+            node.parent.left = rightChild
+        else:
+            node.parent.right = rightChild
+
+        rightChild.left = node
+        node.parent = rightChild
+
+        return node
+
+    def __hasRedChild(self, node):
+        return ((node.left is not None and node.left.color == "Red")
+                or (node.right is not None and node.right.color == "Red"))
+
+    def __fixDoubleBlack(self, node):
+        if node == self.root:
+            return
+
+        parent = node.parent
+        sibling = self.__getSibling(node)
+
+        if sibling is not None:
+            if sibling.color == "Red":
+
+                if sibling.parent.left == sibling:
+                    # If sibling is left child of its parent, rotate right on parent
+                    self.__rotateRight(parent)
+                else:
+                    # If sibling is right child of its parent, rotate left on parent
+                    self.__rotateLeft(parent)
+
+                # fix the colors of parent and sibling
+                parent.color = "Red"
+                sibling.color = "Black"
+
+                '''
+                since the double black still exists on the node, call fix double black for node
+                '''
+                self.__fixDoubleBlack(node)
+
+            else:
+                if self.__hasRedChild(sibling):
+
+                    # if the sibling has left red child
+                    if sibling.left is not None and sibling.left.color == "Red":
+
+                        if sibling.parent.left == sibling:
+                            # if sibling is the left child of its parent (LL Case)
+
+                            # fix the colors
+                            sibling.left.color = sibling.color
+                            sibling.color = parent.color
+                            # rotate right
+                            self.__rotateRight(parent)
+
+                        else:
+                            # if sibling is right child of its parent (RL case)
+
+                            # fix colors
+                            sibling.left.color = parent.color
+                            # rotate right on sibling
+                            self.__rotateRight(sibling)
+                            # rotate left on parent
+                            self.__rotateLeft(parent)
+
+                    else:
+                        # If the sibling has right red child
+
+                        if sibling.parent.left == sibling:
+                            # If sibling is left child of its parent (LR case)
+
+                            # fix colors
+                            sibling.right.color = parent.color
+                            # rotate left on sibling
+                            self.__rotateLeft(sibling)
+                            # rotate right on parent
+                            self.__rotateRight(parent)
+
+                        else:
+                            # If sibling is right child of its parent (RR case)
+
+                            # fix the colors
+                            sibling.right.color = sibling.color
+                            sibling.color = parent.color
+                            # rotate right on parent
+                            self.__rotateLeft(parent)
+
+                else:
+                    # if sibling has no red child
+
+                    # fix the color of sibling
+                    sibling.color = "Red"
+                    if parent.color == "Black":
+                        # If parent was black and since the double black os propagated to parent now, call fix double black
+                        self.__fixDoubleBlack(parent)
+                    else:
+                        # Since parent was red, it can cover the deficit, make it black.
+                        parent.color = "Black"
+
+        else:
+            # if sibling is null, fix double black on parent
+            self.__fixDoubleBlack(parent)
+
+
+    def __swapValues(self, node1, node2):
+        temp = node1.value
+        node1.value = node2.value
+        node2.value = temp
+
+    def __deleteRBTNode(self, nodeToDelete):
+
+        # 2. get the replacementNode
+        replacementNode = self.__getReplacementNode(nodeToDelete)
+
+        # 3. check if replacementNode and nodeToDelete are both black
+        if (replacementNode is None or replacementNode.color == "Black") and (nodeToDelete.color == "Black"):
+            bothBlack = True
+        else:
+            bothBlack = False
+
+        if replacementNode is None:
+
+            if nodeToDelete == self.root:
+                self.root = None
+
+            else:
+
+                # getSibling = self.__getSibling(nodeToDelete)
+
+                if bothBlack is True:
+                    # call fixDoubleBlack case on nodeToDelete
+                    self.__fixDoubleBlack(nodeToDelete)
+
+                elif self.__getSibling(nodeToDelete) is not None:
+                    # else if sibling is not null color it red
+                    self.__getSibling(nodeToDelete).color = "Red"
+
+                if nodeToDelete.parent.left == nodeToDelete:
+                    # If node to delete is left child of parent, make left child of parent null
+                    nodeToDelete.parent.left = None
+                elif nodeToDelete.parent.right == nodeToDelete:
+                    # If node to delete is right child of parent, make right child of parent null
+                    nodeToDelete.parent.right = None
+
+            return
+
+        # If the node to delete has atmost one child
+        if nodeToDelete.left is None or nodeToDelete.right is None:
+
+            if nodeToDelete == self.root:
+                # If node to delete is root
+                nodeToDelete.value = replacementNode.value
+                # make root's left and right child null
+                nodeToDelete.left = nodeToDelete.right = None
+
+            else:
+                # if node to delete is not root
+                if nodeToDelete.parent.left == nodeToDelete:
+                    # if node to delete is left child of parent, make replacement node as left child
+                    nodeToDelete.parent.left = replacementNode
+                else:
+                    # if node to delete is right child of parent, make replacement node as right child
+                    nodeToDelete.parent.right = replacementNode
+
+                # Update parent node
+                replacementNode.parent = nodeToDelete.parent
+
+                if bothBlack is True:
+                    # if both of node to delete and replacement nodes were black, call the fix double black
+                    self.__fixDoubleBlack(replacementNode)
+                else:
+                    # else make the replacement node as black
+                    replacementNode.color = "Black"
+
+            return
+
+        # if the node to delete had both left and right child, swap rides between node to delete and replacement node
+        self.__swapValues(nodeToDelete, replacementNode)
+        # call delete for replacement node
+        self.__deleteRBTNode(replacementNode)
+
+    def delete(self, bookId):
+        # search the node to delete
+        # 1. get nodeToDelete
+        nodeToDelete = self.__searchNode(bookId=bookId)
+
+        if nodeToDelete is None:
+            return "no_bookId"
+
+        self.__deleteRBTNode(nodeToDelete= nodeToDelete)
+
+
