@@ -2,7 +2,7 @@ import os
 from collections import deque
 
 from RedBlackTree import RedBlackTree
-from reservationDetails import Reservation
+from ReservationDetails import Reservation
 
 
 class TestCases:
