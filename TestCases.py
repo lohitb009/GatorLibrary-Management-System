@@ -251,7 +251,7 @@ class TestCases:
             objBook.borrowedBy = None
 
             # output file write
-            result = "\nBook "+str(book_id)+ " Retuned by Patron "+str(patron_id)
+            result = "\nBook "+str(book_id)+ " Returned by Patron "+str(patron_id)
             # print(result)
             self.write_to_output(result)
 
