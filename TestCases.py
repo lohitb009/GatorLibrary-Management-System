@@ -25,6 +25,30 @@ class TestCases:
         # set the timeCount
         self.timeCount = 0
 
+        # inorder traversal list
+        self.__inorderTraversalList = []
+
+
+    def __inorderTraversal(self, node):
+
+        # base-case
+        while node is None:
+            return
+
+        # logic-case
+
+        # traverse on lhs
+        self.__inorderTraversal(node.left)
+
+        # add root
+        rootValue = node.value
+        self.__inorderTraversalList.append(rootValue)
+
+        # traverse on rhs
+        self.__inorderTraversal(node.right)
+
+        return
+
     def __chkForAvailability(self, availabilityStatus):
         if availabilityStatus is True:
             return "Yes"
@@ -240,8 +264,8 @@ class TestCases:
             objBook.borrowedBy = reservationObj.patronId
 
             # output file write
-            result = (f"Book {book_id} Returned by "
-                      f"Patron {patron_id}\n")
+            result = (f"\nBook {book_id} Returned by "
+                      f"Patron {patron_id}")
             # print(result)
             self.write_to_output(result)
 
@@ -259,11 +283,10 @@ class TestCases:
         # set the object to None i.e.
         self.rbt = None
 
-        result = "Program Terminated!!\n"
+        result = "\nProgram Terminated!!"
         # print(result)
         self.write_to_output(result)
 
-    # to implement
     def DeleteBook(self, bookId):
         # update the timeCount
         self.timeCount += 1
@@ -300,9 +323,62 @@ class TestCases:
 
         return
 
-    # to implement
     def FindClosestBook(self, targetId):
-        pass
+
+        # do the inorder traversal of the tree
+        self.__inorderTraversalList = []
+        self.__inorderTraversal(self.rbt.root)
+
+        # find the closest pair
+        minDifference = float('inf')
+
+        # getClosestBooksList
+        closestBooksList = []
+
+        # inorder traversal of the list
+        for i in range(0,len(self.__inorderTraversalList)):
+            bookDetails = self.__inorderTraversalList[i]
+
+            # Calculate absolute difference
+            absolute_difference = abs(bookDetails.bookId - targetId)
+
+            # base-case
+            if i == 0:
+                minDifference = absolute_difference
+                closestBooksList.append(bookDetails)
+                continue
+
+            # logic-case
+            if minDifference > absolute_difference:
+
+                minDifference = absolute_difference
+
+                if len(closestBooksList) > 1:
+                    # if you have more than 1 objects in the list
+                    closestBooksList = [bookDetails]
+                else:
+                    # just update the last element added in the list
+                    closestBooksList[-1] = bookDetails
+
+            elif minDifference == absolute_difference:
+                # difference is same, append the bookDetails in the list
+                closestBooksList.append(bookDetails)
+
+        '''end of for loop'''
+
+        # add the closest books list to the output
+        for books in closestBooksList:
+            result = (f"\nBookID = {books.bookId}\n"
+                      f"Title = {books.bookName}\n"
+                      f"Author = {books.authorName}\n"
+                      f"Availability = {self.__chkForAvailability(books.availabilityStatus)}\n"
+                      f"BorrowedBy = {books.borrowedBy}\n"
+                      f"Reservations = {self.__chkForReservationHeap(books.reservationHeap)}")
+            # print(result)
+            self.write_to_output(result)
+        '''end of for loop'''
+        
+        return
 
     # to implement
     def ColorFlipCount(self):

@@ -21,10 +21,24 @@ Book 12 Borrowed by Patron 138
 Book 12 Reserved by Patron 150
 
 Book 12 Reserved by Patron 162
+
 Book 48 Returned by Patron 120
 
-
 Book 48 Allotted To Patron 142
+
+BookID = 6
+Title = Database Management Systems
+Author = Raghu Ramakrishnan
+Availability = Yes
+BorrowedBy = None
+Reservations = []
+
+BookID = 12
+Title = Artificial Intelligence: A Modern Approach
+Author = Stuart Russell
+Availability = No
+BorrowedBy = 138
+Reservations = [162, 150]
 
 Book 12 is no longer available. Reservation made by patrons 162, 150 have been cancelled!
 
@@ -87,6 +101,13 @@ Book 25 Reserved by Patron 171
 
 Book 132 Borrowed by Patron 2
 
+BookID = 48
+Title = Data Structures and Algorithms
+Author = Sartaj Sahni
+Availability = No
+BorrowedBy = 142
+Reservations = [144, 140]
+
 Book 101 Reserved by Patron 18
 
 Book 210 Borrowed by Patron 210
@@ -111,5 +132,5 @@ Book 210 is no longer available. Reservation made by patrons 34 have been cancel
 Book 25 is no longer available. Reservation made by patrons 171 have been cancelled!
 
 Book 80 is no longer available.
-Program Terminated!!
 
+Program Terminated!!
