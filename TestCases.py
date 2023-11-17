@@ -1,3 +1,4 @@
+import os
 from collections import deque
 
 from RedBlackTree import RedBlackTree
@@ -7,14 +8,16 @@ from reservationDetails import Reservation
 class TestCases:
 
     def __init__(self, outputFileName):
-        # Check if the file exists, if not, create it
-        try:
-            with open(outputFileName, "x"):
-                pass  # Create the file if it doesn't exist
-        except FileExistsError:
-            pass  # The file already exists
+        # Check if the file exists
+        file_exists = os.path.isfile(outputFileName)
 
-        self.output_file = open(outputFileName, "a")  # Open the file in append mode
+        # If the file exists, flush its contents
+        if file_exists:
+            with open(outputFileName, "w") as file:
+                file.write("")  # Flush the contents by overwriting an empty string
+
+        # Open the file in append mode
+        self.output_file = open(outputFileName, "a")
 
         # create an object of class RedBlackTree
         self.rbt = RedBlackTree()
@@ -60,12 +63,12 @@ class TestCases:
 
             if currentNode.value.bookId == book_id:
                 # found it
-                result = (f"BookID = {currentNode.value.bookId}\n"
+                result = (f"\nBookID = {currentNode.value.bookId}\n"
                           f"Title = {currentNode.value.bookName}\n"
                           f"Author = {currentNode.value.authorName}\n"
                           f"Availability = {self.__chkForAvailability(currentNode.value.availabilityStatus)}\n"
                           f"BorrowedBy = {currentNode.value.borrowedBy}\n"
-                          f"Reservations = {self.__chkForReservationHeap(currentNode.value.reservationHeap)}\n")
+                          f"Reservations = {self.__chkForReservationHeap(currentNode.value.reservationHeap)}")
                 # print(result)
                 self.write_to_output(result)
                 break
@@ -114,12 +117,12 @@ class TestCases:
                     # remove the bookId from the set
                     bookId_set.remove(popNode.value.bookId)
 
-                    result = (f"BookID = {popNode.value.bookId}\n"
+                    result = (f"\nBookID = {popNode.value.bookId}\n"
                               f"Title = {popNode.value.bookName}\n"
                               f"Author = {popNode.value.authorName}\n"
                               f"Availability = {self.__chkForAvailability(popNode.value.availabilityStatus)}\n"
                               f"BorrowedBy = {popNode.value.borrowedBy}\n"
-                              f"Reservations = {self.__chkForReservationHeap(popNode.value.reservationHeap)}\n")
+                              f"Reservations = {self.__chkForReservationHeap(popNode.value.reservationHeap)}")
 
                     # print(result)
                     self.write_to_output(result)
@@ -169,8 +172,8 @@ class TestCases:
             # set the borrowedBy to patron_id
             bookNode.value.borrowedBy = patron_id
 
-            result = (f"Book {book_id} Borrowed by "
-                      f"Patron {patron_id}\n")
+            result = (f"\nBook {book_id} Borrowed by "
+                      f"Patron {patron_id}")
             # print(result)
             self.write_to_output(result)
 
@@ -184,8 +187,8 @@ class TestCases:
             objBook = bookNode.value
             objBook.add_reservation(reservation=reservationObj)
 
-            result = (f"Book {book_id} Reserved by "
-                      f"Patron {patron_id}\n")
+            result = (f"\nBook {book_id} Reserved by "
+                      f"Patron {patron_id}")
             # print(result)
             self.write_to_output(result)
 
@@ -224,8 +227,7 @@ class TestCases:
             objBook.borrowedBy = None
 
             # output file write
-            result = (f"Book {book_id} Returned by"
-                      f"Patron {patron_id}\n")
+            result = "\nBook "+str(book_id)+ " Retuned by Patron "+str(patron_id)
             # print(result)
             self.write_to_output(result)
 
@@ -243,8 +245,8 @@ class TestCases:
             # print(result)
             self.write_to_output(result)
 
-            result = (f"Book {book_id} Allotted To "
-                      f"Patron {reservationObj.patronId}\n")
+            result = (f"\nBook {book_id} Allotted To "
+                      f"Patron {reservationObj.patronId}")
             # print(result)
             self.write_to_output(result)
 
@@ -260,6 +262,51 @@ class TestCases:
         result = "Program Terminated!!\n"
         # print(result)
         self.write_to_output(result)
+
+    # to implement
+    def DeleteBook(self, bookId):
+        # update the timeCount
+        self.timeCount += 1
+
+        # call the delete function -- we will get only the node.value
+        deleteNodeValue = self.rbt.delete(bookId=bookId)
+
+        # base-case
+        if deleteNodeValue == "no_bookId":
+            return
+
+        # set general delete message
+        generalMessage = "\nBook " + str(bookId) + " is no longer available."
+
+        # chk for reservation heap
+        if len(deleteNodeValue.reservationHeap) == 0:
+            self.write_to_output(generalMessage)
+
+
+        else:
+            patronIdStr = ""
+
+            # iterate the minHeap
+            while len(deleteNodeValue.reservationHeap) != 0:
+                patronDetails = deleteNodeValue.reservationHeap.popleft()
+                patron_Id = patronDetails.patronId
+                patronIdStr += str(patron_Id) + ", "
+            '''end of while loop'''
+
+            patronIdStr = patronIdStr.rstrip(", ")
+            additionalMessage = (generalMessage +' '+
+                                 "Reservation made by patrons " + patronIdStr + " have been cancelled!")
+            self.write_to_output(additionalMessage)
+
+        return
+
+    # to implement
+    def FindClosestBook(self, targetId):
+        pass
+
+    # to implement
+    def ColorFlipCount(self):
+        pass
 
     def write_to_output(self, result):
         # Write the result to the output file

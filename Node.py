@@ -4,7 +4,8 @@ from Books import Books
 
 
 class Node:
-    def __init__(self, bookId, bookName, authorName, left = None, right = None, parent = None, color = "Red"):
+    def __init__(self, bookId, bookName, authorName,
+                 left = None, right = None, parent = None, color = "Red"):
 
         self.value = Books(
             bookId= bookId,

@@ -1,9 +1,26 @@
+import sys
+
 from TestCases import TestCases
 
 if __name__ == '__main__':
 
+    if len(sys.argv) != 2:
+        print("Usage: python Main.py <input_file>")
+        sys.exit(1)
+
+    # input file name
+    input_file_name = sys.argv[1]
+
+    # set the output-file name
+    outputFileName = "output1.txt"
+
+    if input_file_name == "input2.txt":
+        outputFileName = "output2.txt"
+    elif input_file_name == "input3.txt":
+        outputFileName = "output3.txt"
+
     # Create an instance of the Test class
-    test_instance = TestCases(outputFileName="output1.txt")
+    test_instance = TestCases(outputFileName=outputFileName)
 
     # Read and execute functions from the input file
     with open("input1.txt", "r") as file:

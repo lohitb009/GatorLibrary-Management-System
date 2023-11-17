@@ -767,6 +767,12 @@ class RedBlackTree:
         if nodeToDelete is None:
             return "no_bookId"
 
+        # 2. get the value of the nodeToDelete
+        value = nodeToDelete.value
+
+        # 3. perform delete
         self.__deleteRBTNode(nodeToDelete= nodeToDelete)
 
+        # 4. return the value
+        return value
 
