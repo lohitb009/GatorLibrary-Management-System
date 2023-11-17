@@ -382,7 +382,10 @@ class TestCases:
 
     # to implement
     def ColorFlipCount(self):
-        pass
+        result = (f"\nColor Flip Count: {self.rbt.colorFlipCount}")
+        self.write_to_output(result)
+        return
+
 
     def write_to_output(self, result):
         # Write the result to the output file

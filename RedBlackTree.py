@@ -6,6 +6,7 @@ class RedBlackTree:
 
     def __init__(self):
         self.root = None
+        self.colorFlipCount = 0
 
     '''
     private function: balance nodeInsertion logic
@@ -39,6 +40,7 @@ class RedBlackTree:
         return node
 
     def __colorConflictResolution(self, node=None):
+
         childNode = node
         parentNode = node.parent
         grandParentNode = parentNode.parent
@@ -63,6 +65,9 @@ class RedBlackTree:
                 siblingNode.color = "Black"
                 parentNode.color = "Black"
 
+                # update color flip count
+                self.colorFlipCount += 2
+
                 # chk if to continue further
                 if grandParentNode == self.root:
                     # grandParentNode is root, no need to continue further
@@ -73,6 +78,10 @@ class RedBlackTree:
 
                     if grandParentNode.color == "Red":
                         grandParentNode.color = "Black"
+
+                        # update color flip count
+                        self.colorFlipCount += 1
+
                     else:
                         grandParentNode.color = "Red"
                         # check for red-red conflict again
@@ -302,6 +311,9 @@ class RedBlackTree:
             parentNode.color = "Red"
             childNode.color = "Red"
 
+            # update color flip count -- here at-most 2 nodes will be recolored
+            self.colorFlipCount += 2
+
             # print("ok")
 
 
@@ -343,6 +355,9 @@ class RedBlackTree:
             parentNode.color = "Red"
             childNode.color = "Red"
 
+            # update color flip count -- here at-most 2 nodes will be recolored
+            self.colorFlipCount += 2
+
         elif childNodeDir == "right" and parentNodeDir == "right":
 
             '''
@@ -368,6 +383,9 @@ class RedBlackTree:
             parentNode.color = "Red"
             childNode.color = "Red"
 
+            # update color flip count -- here at-most 2 nodes will be recolored
+            self.colorFlipCount += 2
+
         elif childNodeDir == "left" and parentNodeDir == "left":
             '''
             1. do right rotation
@@ -391,6 +409,9 @@ class RedBlackTree:
             parentNode.color = "Red"
             childNode.color = "Red"
 
+            # update color flip count -- here at-most 2 nodes will be recolored
+            self.colorFlipCount += 2
+
     def insertionNode(self, bookId, bookName, authorName):
         # create an object of class Node
         objNewNode = Node(bookId=bookId,
@@ -400,6 +421,10 @@ class RedBlackTree:
         if self.root is None:
             objNewNode.color = "Black"  # the very first node is black
             self.root = objNewNode
+
+            # initially a red-node even if it is root is flipped to black color
+            self.colorFlipCount += 1
+
             return
 
         # case 2 -- tree is not empty
@@ -409,64 +434,64 @@ class RedBlackTree:
         # now check for color conflict
         self.__colorConflictResolution(objNewNode)
 
-    # write the traversal function
-    def bfsTraversal(self):
-
-        # set the resultList
-        resultList = []
-
-        # initialize an empty queue
-        bfsQueue = deque()
-
-        # add root to the queue
-        bfsQueue.append(self.root)
-
-        # initialize lvl
-        lvl = 0
-
-        while len(bfsQueue) != 0:
-            # set queue size
-            size = len(bfsQueue)
-
-            # local list
-            local = []
-
-            for i in range(0, size):
-
-                # pop the node from the queue
-                popNode = bfsQueue.popleft()
-
-                # check for parent
-                parentValue = None
-
-                # generate a tuple-pair
-                if popNode.parent is not None:
-                    parentValue = popNode.parent.value.bookId
-
-                pair = (popNode.value.bookId, popNode.color, parentValue)
-
-                # add pair inside local
-                local.append(pair)
-
-                # add children of popNode to the bfsQueue
-                if popNode.left is not None:
-                    bfsQueue.append(popNode.left)
-
-                if popNode.right is not None:
-                    bfsQueue.append(popNode.right)
-
-            '''end of for loop'''
-            resultList.append(local)
-
-            # update lvl
-            lvl += 1
-        '''end of while loop'''
-
-        # update lvl
-        lvl -= 1
-
-        # return the result
-        return resultList
+    # # write the traversal function
+    # def bfsTraversal(self):
+    #
+    #     # set the resultList
+    #     resultList = []
+    #
+    #     # initialize an empty queue
+    #     bfsQueue = deque()
+    #
+    #     # add root to the queue
+    #     bfsQueue.append(self.root)
+    #
+    #     # initialize lvl
+    #     lvl = 0
+    #
+    #     while len(bfsQueue) != 0:
+    #         # set queue size
+    #         size = len(bfsQueue)
+    #
+    #         # local list
+    #         local = []
+    #
+    #         for i in range(0, size):
+    #
+    #             # pop the node from the queue
+    #             popNode = bfsQueue.popleft()
+    #
+    #             # check for parent
+    #             parentValue = None
+    #
+    #             # generate a tuple-pair
+    #             if popNode.parent is not None:
+    #                 parentValue = popNode.parent.value.bookId
+    #
+    #             pair = (popNode.value.bookId, popNode.color, parentValue)
+    #
+    #             # add pair inside local
+    #             local.append(pair)
+    #
+    #             # add children of popNode to the bfsQueue
+    #             if popNode.left is not None:
+    #                 bfsQueue.append(popNode.left)
+    #
+    #             if popNode.right is not None:
+    #                 bfsQueue.append(popNode.right)
+    #
+    #         '''end of for loop'''
+    #         resultList.append(local)
+    #
+    #         # update lvl
+    #         lvl += 1
+    #     '''end of while loop'''
+    #
+    #     # update lvl
+    #     lvl -= 1
+    #
+    #     # return the result
+    #     return resultList
 
     def __searchNode(self, bookId):
         currentNode = self.root
@@ -613,6 +638,9 @@ class RedBlackTree:
                 parent.color = "Red"
                 sibling.color = "Black"
 
+                # update color flip count -- here at-most 2 nodes will be recolored
+                self.colorFlipCount += 2
+
                 '''
                 since the double black still exists on the node, call fix double black for node
                 '''
@@ -630,6 +658,10 @@ class RedBlackTree:
                             # fix the colors
                             sibling.left.color = sibling.color
                             sibling.color = parent.color
+
+                            # update color flip count -- here at-most 2 nodes will be recolored
+                            self.colorFlipCount += 2
+
                             # rotate right
                             self.__rotateRight(parent)
 
@@ -638,6 +670,10 @@ class RedBlackTree:
 
                             # fix colors
                             sibling.left.color = parent.color
+
+                            # update color flip count
+                            self.colorFlipCount += 1
+
                             # rotate right on sibling
                             self.__rotateRight(sibling)
                             # rotate left on parent
@@ -651,6 +687,10 @@ class RedBlackTree:
 
                             # fix colors
                             sibling.right.color = parent.color
+
+                            # update color flip count
+                            self.colorFlipCount += 1
+
                             # rotate left on sibling
                             self.__rotateLeft(sibling)
                             # rotate right on parent
@@ -662,6 +702,10 @@ class RedBlackTree:
                             # fix the colors
                             sibling.right.color = sibling.color
                             sibling.color = parent.color
+
+                            # update color flip count -- here at-most 2 nodes will be recolored
+                            self.colorFlipCount += 2
+
                             # rotate right on parent
                             self.__rotateLeft(parent)
 
@@ -670,6 +714,10 @@ class RedBlackTree:
 
                     # fix the color of sibling
                     sibling.color = "Red"
+
+                    # update color flip count
+                    self.colorFlipCount += 1
+
                     if parent.color == "Black":
                         # If parent was black and since the double black os propagated to parent now, call fix double black
                         self.__fixDoubleBlack(parent)
@@ -677,10 +725,12 @@ class RedBlackTree:
                         # Since parent was red, it can cover the deficit, make it black.
                         parent.color = "Black"
 
+                        # update color flip count
+                        self.colorFlipCount += 1
+
         else:
             # if sibling is null, fix double black on parent
             self.__fixDoubleBlack(parent)
-
 
     def __swapValues(self, node1, node2):
         temp = node1.value
@@ -714,6 +764,9 @@ class RedBlackTree:
                 elif self.__getSibling(nodeToDelete) is not None:
                     # else if sibling is not null color it red
                     self.__getSibling(nodeToDelete).color = "Red"
+
+                    # update color flip count
+                    self.colorFlipCount += 1
 
                 if nodeToDelete.parent.left == nodeToDelete:
                     # If node to delete is left child of parent, make left child of parent null
@@ -751,6 +804,9 @@ class RedBlackTree:
                 else:
                     # else make the replacement node as black
                     replacementNode.color = "Black"
+
+                    # update color flip count -- here at-most 2 nodes will be recolored
+                    self.colorFlipCount += 1
 
             return
 

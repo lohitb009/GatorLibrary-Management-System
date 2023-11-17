@@ -1,6 +1,5 @@
 from collections import deque
 
-
 class Books:
     def __init__(self, bookId, bookName, authorName):
         self.bookId = bookId
