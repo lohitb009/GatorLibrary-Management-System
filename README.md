@@ -48,9 +48,9 @@ Note: The time complexities are stated in terms of the height of the Red-Black T
 ### Books.py
 
 | Method                   | Description                                          | Time Complexity    |
-|--------------------------|------------------------------------------------------|---------------------|
-| \_\_init\_\_              | Initializes a book with given book details.         | O(1)                |
-| add_reservation          | Adds a reservation to the book's reservation list and sorts it. | O(n log n)          |
-| remove_reservation       | Removes and returns the earliest reservation from the book. | O(log n)            |
+|--------------------------|------------------------------------------------------|--------------------|
+| \_\_init\_\_              | Initializes a book with given book details.         | O(1)               |
+| add_reservation          | Adds a reservation to the book's reservation list and sorts it. | O(log n)          |
+| remove_reservation       | Removes and returns the earliest reservation from the book. | O(log n)           |
 
 Note: The time complexity for sorting in `add_reservation` is O(n log n), where n is the number of reservations. The removal operation in `remove_reservation` is O(log n) due to the min-heap properties.
