@@ -70,6 +70,39 @@ Note: The time complexity for sorting in `add_reservation` is O(n log n), where 
 
 Note: The time complexities are stated in terms of the height of the Red-Black Tree (log N), where N is the number of nodes in the tree.
 
+### MinHeap.py
+
+| Class   | Description                                  |
+|---------|----------------------------------------------|
+| MinHeap | Implementation of a Min Heap data structure. |
+
+#### Attributes
+
+- `heap`: List representing the heap.
+- `size`: Current size of the heap.
+- `capacity`: Maximum capacity of the heap.
+- `reservation_map`: Dictionary mapping priority numbers to their indices in the heap.
+
+#### Methods
+
+| Method                    | Description                                               | Time Complexity        |
+|---------------------------|-----------------------------------------------------------|-------------------------|
+| `__init__(self, capacity)` | Initializes the MinHeap with the given capacity.          | O(1)                    |
+| `get_left(self, index)`    | Returns the index of the left child of a node.             | O(1)                    |
+| `get_right(self, index)`   | Returns the index of the right child of a node.            | O(1)                    |
+| `get_parent(self, index)`  | Returns the index of the parent of a node.                 | O(1)                    |
+| `insert(self, new_reservation)` | Inserts a new reservation into the heap and maintains the heap property. | O(log N)           |
+| `swap(self, index1, index2)` | Swaps elements at two indices in the heap.                | O(1)                    |
+| `find_min_index(self, index1, index2)` | Finds the index of the minimum element between two indices. | O(1)               |
+| `heapify_up(self, index)` | Maintains the heap property by moving an element upwards in the heap. | O(log N)             |
+| `heapify_down(self, index)` | Maintains the heap property by moving an element downwards in the heap. | O(log N)           |
+| `extract_min(self)`        | Extracts the minimum element from the heap and maintains the heap property. | O(log N)           |
+| `delete_key(self, index)`  | Marks an element at a given index as deleted and adjusts the heap. | O(log N)             |
+| `delete_reservation(self, priority_number)` | Deletes a reservation with the given priority number from the heap. | O(log N)       |
+| `__str__(self)`            | Returns a string representation of the MinHeap.            | O(N)                    |
+
+Note: Time complexities are mentioned in the individual method descriptions.
+
 ### TestCases.py
 
 | Method                  | Description                                          | Time Complexity    |
